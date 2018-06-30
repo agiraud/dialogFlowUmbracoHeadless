@@ -28,28 +28,32 @@ var config = {
 //to use async / await we must run all code inside a async function
 async function run(intent){
   
-    //create a new instance of the client
     var headlessService = new UmbracoHeadless.HeadlessService(config);
-    
-    //the client will implicitly authenticate if you don't do it manually
     await headlessService.authenticate();
 
-    //client is connected and ready
-
-    //get the site
-    // NOTE: this currently will not work without a content item as it needs to be implemented.
-    // getSite will only work when called WITH a content item argument (getting the ancestor site of that content item).
-    // var site = await headlessService.getSite(content);
-    // console.log("site name: " + site.name);
-    // until implemented - get the site using a query or a Id.
-  
-    //get a specific item by id
     var site = await headlessService.getById(1052);
-  
-    //the returned node contains all properties
-    console.log("my custom property:", site.siteName);
+    
+    var services = await headlessService.getChildren(site);
 
-    return site.siteName;
+    function findObjectByKey(array, key, value) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i][key] === value) {
+                return array[i];
+            }
+        }
+        return null;
+    }
+
+    var itentNode = findObjectByKey(services.results, 'name', intent);
+
+    var serviceName = itentNode.serviceName;
+    var available = itentNode.available ? "abierta" : "cerrada";
+    var information = itentNode.information;
+
+    console.log("available:", available);
+    console.log("information:", information);
+
+    return serviceName + " esta actualmente " + available + ". " + information;
 
 }
 
@@ -66,6 +70,14 @@ restService.post("/echo", function(req, res) {
     
   console.log("intent:", intent);
 
+  run(intent)
+  .then(function(speech){
+    return res.json({
+      fulfillmentText: speech,
+      source: "webhook-echo-sample"
+    });
+  });
+
   // var speech =
   //   req.body.queryResult &&
   //   req.body.queryResult.parameters &&
@@ -79,13 +91,7 @@ restService.post("/echo", function(req, res) {
   // console.log("ahora:", speech);
 
   //run the async function
-  run(intent)
-    .then(function(speech){
-      return res.json({
-        fulfillmentText: speech,
-        source: "webhook-echo-sample"
-      });
-  });
+
 
 });
 
