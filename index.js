@@ -47,13 +47,13 @@ async function run(intent){
     var itentNode = findObjectByKey(services.results, 'name', intent);
 
     var serviceName = itentNode.serviceName;
-    var available = itentNode.available ? "abierta" : "cerrada";
+    var available = itentNode.available ? "opened" : "closed";
     var information = itentNode.information;
 
     console.log("available:", available);
     console.log("information:", information);
 
-    return serviceName + " esta actualmente " + available + ". " + information;
+    return serviceName + " is now " + available + ". " + information;
 
 }
 
