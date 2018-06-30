@@ -65,13 +65,16 @@ restService.post("/echo", function(req, res) {
       : "Seems like some problem. Speak again.";
 
   //run the async function
-  speech = run();
-
-  return res.json({
-    speech: speech,
-    displayText: speech,
-    source: "webhook-echo-sample"
+  speech = run()
+    .then(function(){
+      return res.json({
+        speech: speech,
+        displayText: speech,
+        source: "webhook-echo-sample"
+      });
   });
+
+
 
 });
 
