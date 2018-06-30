@@ -79,7 +79,7 @@ restService.post("/echo", function(req, res) {
   // console.log("ahora:", speech);
 
   //run the async function
-  speech = run(intent)
+  run(intent)
     .then(function(speech){
       return res.json({
         fulfillmentText: speech,
