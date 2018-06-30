@@ -5,6 +5,12 @@ const bodyParser = require("body-parser");
 
 const restService = express();
 
+
+//to use async / await we must run all code inside a async function
+async function run(){
+  
+}
+
 restService.use(
   bodyParser.urlencoded({
     extended: true
