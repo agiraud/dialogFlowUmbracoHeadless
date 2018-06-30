@@ -48,7 +48,9 @@ async function run(){
       
         //the returned node contains all properties
         console.log("my custom property:", site.siteName);
-        
+
+        return site.siteName;
+
 }
 
 //.......................................................................
@@ -63,7 +65,7 @@ restService.post("/echo", function(req, res) {
       : "Seems like some problem. Speak again.";
 
   //run the async function
-  run();
+  speech = run();
 
   return res.json({
     speech: speech,
