@@ -5,12 +5,6 @@ const bodyParser = require("body-parser");
 
 const restService = express();
 
-
-//to use async / await we must run all code inside a async function
-async function run(){
-  
-}
-
 restService.use(
   bodyParser.urlencoded({
     extended: true
@@ -19,18 +13,64 @@ restService.use(
 
 restService.use(bodyParser.json());
 
+//.......................................................................
+
+var UmbracoHeadless = require('umbraco-headless');
+
+// this will change when proper token authentication is added
+var config = {
+    url: "https://antoines-funny-bunny.s1.umbraco.io",
+    username: "agi@novicell.es",
+    password: "gach76An",
+    imageBaseUrl: "https://antoines-funny-bunny.s1.umbraco.io"
+};
+
+//to use async / await we must run all code inside a async function
+async function run(){
+  
+    //create a new instance of the client
+    var headlessService = new UmbracoHeadless.HeadlessService(config);
+    
+        //the client will implicitly authenticate if you don't do it manually
+        await headlessService.authenticate();
+    
+        //client is connected and ready
+    
+        //get the site
+        // NOTE: this currently will not work without a content item as it needs to be implemented.
+        // getSite will only work when called WITH a content item argument (getting the ancestor site of that content item).
+        // var site = await headlessService.getSite(content);
+        // console.log("site name: " + site.name);
+        // until implemented - get the site using a query or a Id.
+      
+        //get a specific item by id
+        var site = await headlessService.getById(1052);
+      
+        //the returned node contains all properties
+        console.log("my custom property:", site.siteName);
+        
+}
+
+//.......................................................................
+
 restService.post("/echo", function(req, res) {
+
   var speech =
     req.body.result &&
     req.body.result.parameters &&
     req.body.result.parameters.echoText
       ? req.body.result.parameters.echoText
       : "Seems like some problem. Speak again.";
+
+  //run the async function
+  run();
+
   return res.json({
     speech: speech,
     displayText: speech,
     source: "webhook-echo-sample"
   });
+
 });
 
 restService.post("/audio", function(req, res) {
