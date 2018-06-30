@@ -66,7 +66,7 @@ restService.post("/echo", function(req, res) {
 
   //run the async function
   speech = run()
-    .then(function(){
+    .then(function(speech){
       return res.json({
         speech: speech,
         displayText: speech,
