@@ -65,6 +65,8 @@ restService.post("/echo", function(req, res) {
       : "Seems like some problem. Speak again.";
 
   //the returned node contains all properties
+  console.log("req:", req);
+  console.log("req.body:", req.body);
   console.log("req.body.result:", req.body.result);
   console.log("req.body.result.parameters:", req.body.result.parameters);
 
