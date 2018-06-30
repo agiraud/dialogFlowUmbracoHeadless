@@ -64,6 +64,9 @@ restService.post("/echo", function(req, res) {
       ? req.body.result.parameters.echoText
       : "Seems like some problem. Speak again.";
 
+  //the returned node contains all properties
+  console.log("come from google:", speech);
+
   //run the async function
   speech = run()
     .then(function(speech){
@@ -73,8 +76,6 @@ restService.post("/echo", function(req, res) {
         source: "webhook-echo-sample"
       });
   });
-
-
 
 });
 
