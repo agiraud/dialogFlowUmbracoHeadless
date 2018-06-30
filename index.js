@@ -26,30 +26,30 @@ var config = {
 };
 
 //to use async / await we must run all code inside a async function
-async function run(){
+async function run(intent){
   
     //create a new instance of the client
     var headlessService = new UmbracoHeadless.HeadlessService(config);
     
-        //the client will implicitly authenticate if you don't do it manually
-        await headlessService.authenticate();
-    
-        //client is connected and ready
-    
-        //get the site
-        // NOTE: this currently will not work without a content item as it needs to be implemented.
-        // getSite will only work when called WITH a content item argument (getting the ancestor site of that content item).
-        // var site = await headlessService.getSite(content);
-        // console.log("site name: " + site.name);
-        // until implemented - get the site using a query or a Id.
-      
-        //get a specific item by id
-        var site = await headlessService.getById(1052);
-      
-        //the returned node contains all properties
-        console.log("my custom property:", site.siteName);
+    //the client will implicitly authenticate if you don't do it manually
+    await headlessService.authenticate();
 
-        return site.siteName;
+    //client is connected and ready
+
+    //get the site
+    // NOTE: this currently will not work without a content item as it needs to be implemented.
+    // getSite will only work when called WITH a content item argument (getting the ancestor site of that content item).
+    // var site = await headlessService.getSite(content);
+    // console.log("site name: " + site.name);
+    // until implemented - get the site using a query or a Id.
+  
+    //get a specific item by id
+    var site = await headlessService.getById(1052);
+  
+    //the returned node contains all properties
+    console.log("my custom property:", site.siteName);
+
+    return site.siteName;
 
 }
 
@@ -57,18 +57,29 @@ async function run(){
 
 restService.post("/echo", function(req, res) {
 
-  var speech =
-    req.body.queryResult &&
-    req.body.queryResult.parameters &&
-    req.body.queryResult.parameters.echoText
-      ? req.body.queryResult.parameters.echoText
-      : "Seems like some problem. Speak again.";
+  var intent =
+  req.body.queryResult &&
+  req.body.queryResult.intent &&
+  req.body.queryResult.intent.displayName
+    ? req.body.queryResult.intent.displayName
+    : "";
+    
+  console.log("intent:", intent);
 
-  //the returned node contains all properties
-  console.log("ahora:", speech);
+  // var speech =
+  //   req.body.queryResult &&
+  //   req.body.queryResult.parameters &&
+  //   req.body.queryResult.parameters.echoText
+  //     ? req.body.queryResult.parameters.echoText
+  //     : "Seems like some problem. Speak again.";
+  
+  // console.log("req.body:", req.body);
+
+  // //the returned node contains all properties
+  // console.log("ahora:", speech);
 
   //run the async function
-  speech = run()
+  speech = run(intent)
     .then(function(speech){
       return res.json({
         fulfillmentText: speech,
