@@ -65,7 +65,8 @@ restService.post("/echo", function(req, res) {
       : "Seems like some problem. Speak again.";
 
   //the returned node contains all properties
-  console.log("come from google:", speech);
+  console.log("req.body.result:", req.body.result);
+  console.log("req.body.result.parameters:", req.body.result.parameters);
 
   //run the async function
   speech = run()
