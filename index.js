@@ -25,39 +25,81 @@ var config = {
     imageBaseUrl: "https://antoines-funny-bunny.s1.umbraco.io"
 };
 
-//to use async / await we must run all code inside a async function
-async function run(intent){
-  
-    var headlessService = new UmbracoHeadless.HeadlessService(config);
-    await headlessService.authenticate();
+function findObjectByKeyAndName(array, key, value, name) {
+  for (var i = 0; i < array.length; i++) {
+      if (array[i][key].toLowerCase() === value.toLowerCase() && array[i]["name"].toLowerCase() === name.toLowerCase()) {
+          return array[i];
+      }
+  }
+  return null;
+}
 
-    var site = await headlessService.getById(1052);
+function findObjectsByKey(array, key, value) {
+  result = [];
+  for (var i = 0; i < array.length; i++) {
+      if (array[i][key].toLowerCase() === value.toLowerCase()) {
+          result.push(array[i]);
+      }
+  }
+  return result;
+}
+
+function findObjectByKey(array, key, value) {
+  for (var i = 0; i < array.length; i++) {
+      if (array[i][key].toLowerCase() === value.toLowerCase()) {
+          return array[i];
+      }
+  }
+  return null;
+}
+
+async function lookUp(headlessService, intent, parameters, node)
+{
     
-    var services = await headlessService.getChildren(site);
+    console.log("selected node:", node.name);
 
-    function findObjectByKey(array, key, value) {
-        for (var i = 0; i < array.length; i++) {
-            if (array[i][key] === value) {
-                return array[i];
-            }
-        }
+    var nodes = await headlessService.getChildren(node);
+
+    if (!nodes || !nodes.results)
         return null;
+
+    var entities = findObjectsByKey(nodes.results, "contentTypeAlias", "entity");
+    var information = findObjectsByKey(nodes.results, "contentTypeAlias", "information");
+
+    for(var parameter in parameters) {
+        selectedEntity = findObjectByKeyAndName(entities, "type", parameter, parameters[parameter]);
+        if (selectedEntity) 
+        {
+            return await lookUp(headlessService, intent, parameters, selectedEntity);
+        }
     }
 
-    var itentNode = findObjectByKey(services.results, 'name', intent);
+    console.log("intent:", intent);
+    var selectedInformation = findObjectByKey(information, "name", intent);
 
-    var serviceName = itentNode.serviceName;
-    var available = itentNode.available ? "opened" : "closed";
-    var information = itentNode.information;
+    if (!selectedInformation || !selectedInformation.value)
+        return null;
 
-    console.log("available:", available);
-    console.log("information:", information);
-
-    return serviceName + " is now " + available + ". " + information;
+    return selectedInformation.value;
 
 }
 
-//.......................................................................
+//to use async / await we must run all code inside a async function
+async function run(intent, parameters){
+  
+  var headlessService = new UmbracoHeadless.HeadlessService(config);
+  await headlessService.authenticate();
+
+  var node = await headlessService.getById(1052);
+  
+  // For each parameters, I look for en entity with the same name:object
+  // hotel:royal luxuary hotel
+  // If I fond something, I go deeper into the tree and repeat again
+  // If not, I look for an information with the same name as the intent.
+  //var result = await lookUp(headlessService, intent, parameters, node);
+  return await lookUp(headlessService, intent, parameters, node);
+
+}
 
 restService.post("/echo", function(req, res) {
 
@@ -67,10 +109,17 @@ restService.post("/echo", function(req, res) {
   req.body.queryResult.intent.displayName
     ? req.body.queryResult.intent.displayName
     : "";
+
+  var parameters =
+  req.body.queryResult &&
+  req.body.queryResult.parameters
+    ? req.body.queryResult.parameters
+    : {};
     
   console.log("intent:", intent);
+  console.log("intent:", parameters);
 
-  run(intent)
+  run(intent, parameters)
   .then(function(speech){
     return res.json({
       fulfillmentText: speech,
