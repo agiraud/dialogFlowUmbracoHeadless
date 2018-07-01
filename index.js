@@ -96,8 +96,9 @@ async function run(intent, parameters){
   // hotel:royal luxuary hotel
   // If I fond something, I go deeper into the tree and repeat again
   // If not, I look for an information with the same name as the intent.
-  //var result = await lookUp(headlessService, intent, parameters, node);
-  return await lookUp(headlessService, intent, parameters, node);
+  var result = await lookUp(headlessService, intent, parameters, node);
+  console.log("result:", result);
+  return result;
 
 }
 
