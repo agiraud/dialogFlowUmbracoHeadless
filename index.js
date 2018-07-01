@@ -112,13 +112,14 @@ restService.post("/echo", function(req, res) {
     : "";
 
   var parameters =
-  req.body.outputContexts &&
-  req.body.outputContexts.parameters
-    ? req.body.outputContexts.parameters
+  req.body.queryResult &&
+  req.body.queryResult.outputContexts &&
+  req.body.queryResult.outputContexts.parameters
+    ? req.body.queryResult.outputContexts.parameters
     : {};
     
   console.log("intent:", intent);
-  console.log("intent:", parameters);
+  console.log("parameters:", parameters);
 
   run(intent, parameters)
   .then(function(speech){
