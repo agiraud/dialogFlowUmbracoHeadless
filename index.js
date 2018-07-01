@@ -119,6 +119,7 @@ restService.post("/echo", function(req, res) {
     : {};
     
   console.log("intent:", intent);
+  console.log("queryResult:", req.body.queryResult);
   console.log("parameters:", parameters);
 
   run(intent, parameters)
