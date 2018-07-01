@@ -112,9 +112,9 @@ restService.post("/echo", function(req, res) {
     : "";
 
   var parameters =
-  req.body.queryResult &&
-  req.body.queryResult.parameters
-    ? req.body.queryResult.parameters
+  req.body.outputContexts &&
+  req.body.outputContexts.parameters
+    ? req.body.outputContexts.parameters
     : {};
     
   console.log("intent:", intent);
