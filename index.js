@@ -35,7 +35,7 @@ function findObjectByKeyAndName(array, key, value, name) {
 }
 
 function findObjectsByKey(array, key, value) {
-  result = [];
+  var result = [];
   for (var i = 0; i < array.length; i++) {
       if (array[i][key].toLowerCase() === value.toLowerCase()) {
           result.push(array[i]);
