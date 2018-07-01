@@ -67,7 +67,7 @@ async function lookUp(headlessService, intent, parameters, node)
     var information = findObjectsByKey(nodes.results, "contentTypeAlias", "information");
 
     for(var parameter in parameters) {
-        selectedEntity = findObjectByKeyAndName(entities, "type", parameter, parameters[parameter]);
+        var selectedEntity = findObjectByKeyAndName(entities, "type", parameter, parameters[parameter]);
         if (selectedEntity) 
         {
             return await lookUp(headlessService, intent, parameters, selectedEntity);
