@@ -66,6 +66,7 @@ async function lookUp(headlessService, intent, parameters, node)
     var entities = findObjectsByKey(nodes.results, "contentTypeAlias", "entity");
     var information = findObjectsByKey(nodes.results, "contentTypeAlias", "information");
 
+    /*
     for(var parameter in parameters) {
         var selectedEntity = findObjectByKeyAndName(entities, "type", parameter, parameters[parameter]);
         if (selectedEntity) 
@@ -73,14 +74,16 @@ async function lookUp(headlessService, intent, parameters, node)
             return await lookUp(headlessService, intent, parameters, selectedEntity);
         }
     }
+    */
 
     console.log("intent:", intent);
-    var selectedInformation = findObjectByKey(information, "name", intent);
 
-    if (!selectedInformation || !selectedInformation.value)
+    var selectedIntent = findObjectByKey(information, "intent", intent);
+
+    if (!selectedIntent || !selectedIntent.value)
         return null;
 
-    return selectedInformation.value;
+    return selectedIntent.value;
 
 }
 
