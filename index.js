@@ -318,7 +318,7 @@ restService.post("/slack-test", function(req, res) {
   });
 });
 
-app.get('/', function (req, res) {
+restService.get('/', function (req, res) {
   res.send('Hello World!')
 })
 
