@@ -318,8 +318,11 @@ restService.post("/slack-test", function(req, res) {
   });
 });
 
-restService.get('/', function (req, res) {
+
+
+async function getinfo(){
   
+  var res = "";
   var headlessService = new UmbracoHeadless.HeadlessService(config);
   await headlessService.authenticate();
 
@@ -330,8 +333,20 @@ restService.get('/', function (req, res) {
   var informations = findObjectsByKey(nodes.results, "contentTypeAlias", "information");
   
   for(var information in informations) {
-    res.send(information.name + ': ' + information.value + '<br />');
+    res = res + information.name + ': ' + information.value + '<br />';
   }
+
+  return res;
+
+}
+
+
+restService.get('/', function (req, res) {
+  
+  getinfo()
+  .then(function(speech){
+    res.send(speech);
+  });
   
 })
 
