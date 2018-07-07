@@ -332,14 +332,15 @@ async function getinfo(){
 
   var informations = findObjectsByKey(nodes.results, "contentTypeAlias", "information");
   
-  for(var information in informations) {
-    res = res + information.name + ': ' + information.value + '<br />';
+  console.log(informations[0]);
+
+  for(var index in informations) {
+    res = res + '<b>' + informations[index].name + ':</b><br /> ' + informations[index].value + '<br /><br />';
   }
 
   return res;
 
 }
-
 
 restService.get('/', function (req, res) {
   
