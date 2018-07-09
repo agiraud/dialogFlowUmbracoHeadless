@@ -334,6 +334,8 @@ async function getinfo(){
   
   console.log(informations[0]);
 
+  res = "<h2>Preguntas frequentes</h2>";
+
   for(var index in informations) {
     res = res + '<b>' + informations[index].name + ':</b><br /> ' + informations[index].value + '<br /><br />';
   }
